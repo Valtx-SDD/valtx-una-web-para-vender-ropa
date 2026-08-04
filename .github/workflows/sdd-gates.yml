@@ -1,24 +1,26 @@
-name: SDD Quality Gates
+name: "Valtx SDD Gates"
 
 on:
-  push:
-    branches: [ main, master ]
   pull_request:
+    types: [opened, synchronize, reopened]
+  push:
     branches: [ main, master ]
 
 jobs:
-  sdd-gates:
+  gates:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [constitution, specify, plan, implement, merge]
+    name: "gates · ${{ matrix.phase }}"
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install valtx-sdd
-      - name: Run SDD Gates
-        run: |
-          sdd check
+          fetch-depth: 0
+      - name: Ejecutar Gates de Gobernanza
+        uses: Valtx-SDD/valtx-sdd-core@v0.0.7
+        with:
+          phase: ${{ matrix.phase }}
+          hub-url: ${{ vars.VALTX_HUB_URL }}
+          hub-secret: ${{ secrets.VALTX_HUB_SECRET }}
