@@ -1,0 +1,35 @@
+schema: 1
+project: una-web-para-vender-ropa
+repo:
+  name: valtx-una-web-para-vender-ropa
+  role: mono
+  areas:
+  - UNAW
+governance:
+  source: oci://ghcr.io/valtx-sdd/governance:v1.0.1
+  packs: []
+constitution: constitution.yaml
+specs: specs/
+code:
+- path: src
+  lang: python
+manifest: .sdd/universe.lock.json
+gates:
+  G0: block
+  G1: block
+  G2: block
+  G3: block
+  G4: block
+  G5: block
+  G6: block
+  G7: block
+  G8: warn
+  G9: warn
+  G10: block
+  G11: warn
+  G12: block
+cycle:
+  default_runner: openai_compat
+  default_provider: nvidia_nim
+  default_model: nvidia/meta/llama-3.3-70b-instruct
+  max_retries: 3

@@ -1,0 +1,9 @@
+version: "1.0"
+extensions:
+  valtx-sdd:
+    enabled: true
+    version: "v1.0.1"
+    gates:
+      - lint
+      - test
+      - architecture

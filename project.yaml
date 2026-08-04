@@ -1,0 +1,12 @@
+id: una-web-para-vender-ropa
+nombre: Una web para vender ropa
+topologia: mono-repo
+estado: activo
+governance_version: 1.0.1
+repos:
+- name: valtx-una-web-para-vender-ropa
+  role: mono
+  languages:
+  - python
+areas:
+  UNAW: valtx-una-web-para-vender-ropa

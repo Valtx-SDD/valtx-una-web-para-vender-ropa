@@ -1,0 +1,20 @@
+version: 1.0.0
+extends: valtx-governance@1.0.1
+owner: arquitectura
+last_review: '2026-08-03'
+principles:
+- id: PRIN-STK-001
+  enforcement: MUST
+  applies_when:
+  - dependencia
+  - lockfile
+  - runtime
+  constraint: Ninguna dependencia fuera del allowlist STK del proyecto puede entrar
+    en un lockfile sin un STK aprobado.
+  verified_by:
+  - G6
+waivers: []
+repo:
+  role: mono
+  languages:
+  - python
