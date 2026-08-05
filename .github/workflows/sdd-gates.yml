@@ -10,6 +10,8 @@ jobs:
   gates:
     runs-on: ubuntu-latest
     strategy:
+      # Sin esto, la primera fase que bloquea cancela las demás y la PR muestra
+      # un veredicto parcial: se pierde justo la evidencia que más falta hace.
       fail-fast: false
       matrix:
         phase: [constitution, specify, plan, implement, merge]
@@ -19,8 +21,27 @@ jobs:
         with:
           fetch-depth: 0
       - name: Ejecutar Gates de Gobernanza
-        uses: Valtx-SDD/valtx-sdd-core@v0.0.7
+        uses: Valtx-SDD/valtx-sdd-core@v0.0.8
         with:
           phase: ${{ matrix.phase }}
           hub-url: ${{ vars.VALTX_HUB_URL }}
           hub-secret: ${{ secrets.VALTX_HUB_SECRET }}
+
+  # El ruleset exige un check llamado exactamente `gates`. La matriz publica
+  # `gates · <fase>` —el `name:` de un job gana a su id—, así que ese nombre no
+  # lo emitía nadie: GitHub esperaba un status que jamás llegaba y la PR quedaba
+  # bloqueada con los cinco checks en verde. Este job es el único que lleva ese
+  # nombre y el único que el ruleset necesita conocer, así que añadir una fase
+  # no obliga a tocar el ruleset de los N repos provisionados.
+  gates-verdict:
+    name: "gates"
+    needs: [gates]
+    # Sin `always()` una fase en rojo *salta* este job, y un check requerido que
+    # se salta tampoco se reporta: volveríamos a la PR colgada en vez de en rojo.
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veredicto conjunto de las fases
+        run: |
+          echo "resultado de la matriz: ${{ needs.gates.result }}"
+          [ "${{ needs.gates.result }}" = "success" ] || exit 1
